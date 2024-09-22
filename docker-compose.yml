@@ -1,0 +1,45 @@
+services:
+  load_balancer:
+    build: .
+    container_name: nginx_load_balancer
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/geoip:/etc/nginx/geoip
+    networks:
+      - lb_network
+
+  uk_server:
+    image: httpd:latest
+    container_name: uk_server
+    networks:
+      - lb_network
+
+  us_server1:
+    image: httpd:latest
+    container_name: us_server1
+    networks:
+      - lb_network
+
+  us_server2:
+    image: httpd:latest
+    container_name: us_server2
+    networks:
+      - lb_network
+
+  rest_server:
+    image: httpd:latest
+    container_name: rest_server
+    networks:
+      - lb_network
+
+  backup_server:
+    image: httpd:latest
+    container_name: backup_server
+    networks:
+      - lb_network
+
+networks:
+  lb_network:
+    driver: bridge
